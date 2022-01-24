@@ -1,7 +1,19 @@
 package main
 
-import "fmt"
+import (
+	"net/http"
+
+	"github.com/dasom222g/todo-go/handler"
+	"github.com/urfave/negroni"
+)
 
 func main() {
-	fmt.Println("hello")
+	mux := handler.NewHttpHandler()
+	n := negroni.Classic()
+	n.UseHandler(mux)
+
+	err := http.ListenAndServe(":3000", n)
+	if err != nil {
+		panic(err)
+	}
 }
