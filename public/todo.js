@@ -32,7 +32,6 @@ const handleSubmit = async (e) => {
     body: JSON.stringify(data)
   })
   const result = await response.json()
-  console.log('result', result)
   setTodo(result)
   reset(input)
 }
@@ -41,7 +40,6 @@ const removeTodo = async (id, element) => {
   const response = await fetch(`todos/${id}`, { method: 'DELETE' })
   const result = await response.json()
   result.success && element.remove()
-  console.log('element', element)
 }
 
 const handleClick = (e) => {
@@ -56,7 +54,6 @@ const handleClick = (e) => {
 
 // ui
 const setTodo = (item) => {
-  console.log('item', item)
   const li = document.createElement('li')
   li.className = `todo__item`
   li.setAttribute('data-id', item.id)
