@@ -34,12 +34,12 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleGetTodos(w http.ResponseWriter, r *http.Request) {
+	todos := []*Todo{}
 	if len(todoMap) == 0 {
-		rd.Text(w, http.StatusOK, "No todo")
+		rd.JSON(w, http.StatusOK, todos)
 		return
 	}
 
-	todos := []*Todo{}
 	for _, value := range todoMap {
 		todos = append(todos, value)
 	}
