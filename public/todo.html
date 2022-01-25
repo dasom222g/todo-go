@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="./style/todo.css">
   <title>Todo</title>
 </head>
@@ -25,12 +26,12 @@
         <section>
           <ul class="todo__list">
             <li class="todo__item">
-              <div class="todo__content">
+              <div class="todo__content"> <!-- complete-->
                 <div class="todo__item-check">
                   <label>
-                    <input type="checkbox">
-                    <font-awesome-icon icon="square" class="todo__item-check-icon"></font-awesome-icon>
-                    <font-awesome-icon icon="check-square" class="todo__item-check-icon complete"></font-awesome-icon>
+                    <input type="checkbox"> <!--checked="isCompleted"-->
+                    <i class="fas fa-square todo__item-check-icon"></i>
+                    <i class="fas fa-check-square todo__item-check-icon complete"></i>
                     <span class="todo__content-text">test 수정..</span>
                   </label>
                 </div>
