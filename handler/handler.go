@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -61,14 +60,27 @@ func handleAddTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleRemoveTodo(w http.ResponseWriter, r *http.Request) {
-	url := *r.URL
+	url := *r.URL // {    /todos/1  false %3Aid=1  }
 	pathSlice := strings.Split(url.Path, "/")
 	id, _ := strconv.Atoi(pathSlice[len(pathSlice)-1])
-	log.Print("url: ", url)
-	log.Printf("id: %d", id)
 	if _, exists := todoMap[id]; exists {
 		// 해당 아이템이 있는 경우
 		delete(todoMap, id)
+		rd.JSON(w, http.StatusOK, &Success{true})
+	} else {
+		rd.JSON(w, http.StatusOK, &Success{false})
+	}
+}
+
+func handleCompleteTodo(w http.ResponseWriter, r *http.Request) {
+	// query메소드 값을 FormValue로 받음
+	isComplete := r.FormValue("complete") == "true"
+	url := *r.URL
+	pathSlice := strings.Split(url.Path, "/")
+	id, _ := strconv.Atoi(pathSlice[len(pathSlice)-1])
+	if todo, exists := todoMap[id]; exists {
+		// 해당 아이템이 있는 경우
+		todo.IsComplete = isComplete
 		rd.JSON(w, http.StatusOK, &Success{true})
 	} else {
 		rd.JSON(w, http.StatusOK, &Success{false})
@@ -81,6 +93,7 @@ func NewHttpHandler() http.Handler {
 	currentID = 0
 
 	mux := pat.New()
+	mux.Get("/todos/{id:[0-9]+}", handleCompleteTodo)
 	mux.Get("/todos", handleGetTodos)
 	mux.Post("/todos", handleAddTodo)
 	// mux.Delete("/todos{id}", handleRemoveTodo)

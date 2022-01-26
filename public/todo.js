@@ -50,8 +50,7 @@ const changeCompleteTodo = async (id, checked, element) => {
   const result = await response.json()
   content.classList.remove('complete') // 초기화
   console.log('result', result)
-  const className = checked ? 'complete' : '' 
-  content.classList.add(className)
+  checked && content.classList.add('complete')
 }
 
 const handleClick = (e) => {
