@@ -1,6 +1,5 @@
 const form = document.querySelector('.form').querySelector('form')
 const listArea = document.querySelector('.todo__list')
-// const completeCheckbox = listArea.querySelector(`input[type='checkbox']`)
 const header = {
   headers: {
     'Content-Type': 'application/json',
@@ -43,13 +42,14 @@ const removeTodo = async (id, element) => {
   result.success && element.remove()
 }
 
-const changeCompleteTodo = async (id, checked, element) => {
+const changeCompleteTodo = async (e) => {
   // 'todos/1?complete=true'
+  const checked = e.target.checked
+  const element = e.target.closest('li')
   const content = element.querySelector('.todo__content')
-  const response = await fetch(`todos/${id}?complete=${checked}`)
-  const result = await response.json()
+
+  await fetch(`todos/${element.dataset.id}?complete=${checked}`)
   content.classList.remove('complete') // 초기화
-  console.log('result', result)
   checked && content.classList.add('complete')
 }
 
@@ -60,9 +60,6 @@ const handleClick = (e) => {
     case 'delete':
       removeTodo(element.dataset.id, element)
       break
-    case 'changeComplete':
-      changeCompleteTodo(element.dataset.id, target.checked, element)
-      break
   }
 }
 
@@ -71,10 +68,11 @@ const setTodo = (item) => {
   const li = document.createElement('li')
   li.className = `todo__item`
   li.setAttribute('data-id', item.id)
-  const html = `<div class="todo__content ${item.is_complete ? 'complete' : ''}"><div class="todo__item-check"><label><input type="checkbox" data-event-type="changeComplete"><i class="fas fa-square todo__item-check-icon"></i><i class="fas fa-check-square todo__item-check-icon complete"></i><span class="todo__content-text">${item.title}</span></label></div><div class="todo__item-buttonarea"><button type="button" class="todo__item-button"><i class="fas fa-trash-alt" data-event-type="delete"></i></button></div></div>`
+  const html = `<div class="todo__content ${item.is_complete ? 'complete' : ''}"><div class="todo__item-check"><label><input type="checkbox"><i class="fas fa-square todo__item-check-icon"></i><i class="fas fa-check-square todo__item-check-icon complete"></i><span class="todo__content-text">${item.title}</span></label></div><div class="todo__item-buttonarea"><button type="button" class="todo__item-button"><i class="fas fa-trash-alt" data-event-type="delete"></i></button></div></div>`
   li.innerHTML = html
   item.is_complete && li.querySelector('input').setAttribute('checked', item.is_complete)
   listArea.appendChild(li)
+  li.querySelector(`input[type='checkbox']`).addEventListener('change', changeCompleteTodo)
 }
 
 const reset = (input) => {
