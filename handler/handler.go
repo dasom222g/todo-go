@@ -56,7 +56,7 @@ func handleAddTodo(w http.ResponseWriter, r *http.Request) {
 	todo.CreatedAt = time.Now()
 	todo.UpdatedAt = time.Now()
 	todoMap[todo.ID] = todo
-	rd.JSON(w, http.StatusOK, todo)
+	rd.JSON(w, http.StatusCreated, todo)
 }
 
 func handleRemoveTodo(w http.ResponseWriter, r *http.Request) {
