@@ -2,8 +2,9 @@ package model
 
 import "time"
 
-var todoMap map[int]*Todo
-var currentID int
+// inmemory 데이터를 struct에서 관리하며 메소드로 로직 정의
+// var todoMap map[int]*Todo
+// var currentID int
 
 type Todo struct {
 	ID         int       `json:"id"`
@@ -13,49 +14,34 @@ type Todo struct {
 	UpdatedAt  time.Time `json:"updated_at"`
 }
 
-func init() {
-	// 패키지 실행 변수 초기화 이후로 실행됨
-	todoMap = make(map[int]*Todo)
-	currentID = 0
+// memoryHandler는 dbHandler 인터페이스를 구현함
+
+type dbHandler interface {
+	addTodo(title string) *Todo
+	getTodos() []*Todo
+	removeTodo(id int) bool
+	completeTodo(id int, isComplete bool) bool
+}
+
+var handler dbHandler
+
+func init() { // 패키지 실행 변수 초기화 이후로 실행됨
+	// 같은 패키지에 있으므로 따로 import하지 않아도 인식됨
+	handler = newMemoryHandler()
 }
 
 func AddTodo(title string) *Todo {
-	todo := &Todo{}
-
-	currentID++
-	todo.ID = currentID
-	todo.Title = title
-	todo.IsComplete = false
-	todo.CreatedAt = time.Now()
-	todo.UpdatedAt = time.Now()
-
-	todoMap[todo.ID] = todo
-	return todo
+	return handler.addTodo(title)
 }
 
 func GetTodos() []*Todo {
-	todos := []*Todo{}
-	if len(todoMap) == 0 {
-		return todos
-	}
-	for _, value := range todoMap {
-		todos = append(todos, value)
-	}
-	return todos
+	return handler.getTodos()
 }
 
 func RemoveTodo(id int) bool {
-	if _, exists := todoMap[id]; exists {
-		delete(todoMap, id)
-		return true
-	}
-	return false
+	return handler.removeTodo(id)
 }
 
 func CompleteTodo(id int, isComplete bool) bool {
-	if todo, exists := todoMap[id]; exists {
-		todo.IsComplete = isComplete
-		return true
-	}
-	return false
+	return handler.completeTodo(id, isComplete)
 }
