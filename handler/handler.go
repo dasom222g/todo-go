@@ -5,24 +5,25 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/dasom222g/todo-go/check"
+	"github.com/dasom222g/todo-go/model"
 	"github.com/gorilla/pat"
 	"github.com/unrolled/render"
 )
 
 var rd *render.Render
-var todoMap map[int]*Todo
-var currentID int
 
-type Todo struct {
-	ID         int       `json:"id"`
-	Title      string    `json:"title"`
-	IsComplete bool      `json:"is_complete"`
-	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
-}
+// var todoMap map[int]*Todo
+// var currentID int
+
+// type Todo struct {
+// 	ID         int       `json:"id"`
+// 	Title      string    `json:"title"`
+// 	IsComplete bool      `json:"is_complete"`
+// 	CreatedAt  time.Time `json:"created_at"`
+// 	UpdatedAt  time.Time `json:"updated_at"`
+// }
 
 type Success struct {
 	Success bool `json:"success"`
@@ -33,43 +34,26 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleGetTodos(w http.ResponseWriter, r *http.Request) {
-	todos := []*Todo{}
-	if len(todoMap) == 0 {
-		rd.JSON(w, http.StatusOK, todos)
-		return
-	}
-
-	for _, value := range todoMap {
-		todos = append(todos, value)
-	}
+	todos := model.GetTodos()
 	rd.JSON(w, http.StatusOK, todos)
 }
 
 func handleAddTodo(w http.ResponseWriter, r *http.Request) {
-	todo := new(Todo)
+	todo := new(model.Todo)
 	err := json.NewDecoder(r.Body).Decode(todo)
 	if check.IsError(err, rd, w, http.StatusBadRequest) {
 		return
 	}
-	currentID++
-	todo.ID = currentID
-	todo.CreatedAt = time.Now()
-	todo.UpdatedAt = time.Now()
-	todoMap[todo.ID] = todo
-	rd.JSON(w, http.StatusCreated, todo)
+	newTodo := model.AddTodo(todo.Title)
+	rd.JSON(w, http.StatusCreated, newTodo)
 }
 
 func handleRemoveTodo(w http.ResponseWriter, r *http.Request) {
 	url := *r.URL // {    /todos/1  false %3Aid=1  }
 	pathSlice := strings.Split(url.Path, "/")
 	id, _ := strconv.Atoi(pathSlice[len(pathSlice)-1])
-	if _, exists := todoMap[id]; exists {
-		// 해당 아이템이 있는 경우
-		delete(todoMap, id)
-		rd.JSON(w, http.StatusOK, &Success{true})
-	} else {
-		rd.JSON(w, http.StatusOK, &Success{false})
-	}
+	ok := model.RemoveTodo(id)
+	rd.JSON(w, http.StatusOK, &Success{ok})
 }
 
 func handleCompleteTodo(w http.ResponseWriter, r *http.Request) {
@@ -78,19 +62,14 @@ func handleCompleteTodo(w http.ResponseWriter, r *http.Request) {
 	url := *r.URL
 	pathSlice := strings.Split(url.Path, "/")
 	id, _ := strconv.Atoi(pathSlice[len(pathSlice)-1])
-	if todo, exists := todoMap[id]; exists {
-		// 해당 아이템이 있는 경우
-		todo.IsComplete = isComplete
-		rd.JSON(w, http.StatusOK, &Success{true})
-	} else {
-		rd.JSON(w, http.StatusOK, &Success{false})
-	}
+	ok := model.CompleteTodo(id, isComplete)
+	rd.JSON(w, http.StatusOK, &Success{ok})
 }
 
 func NewHttpHandler() http.Handler {
 	rd = render.New()
-	todoMap = make(map[int]*Todo)
-	currentID = 0
+	// todoMap = make(map[int]*Todo)
+	// currentID = 0
 
 	mux := pat.New()
 	mux.Get("/todos/{id:[0-9]+}", handleCompleteTodo)
