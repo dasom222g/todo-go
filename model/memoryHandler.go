@@ -7,7 +7,7 @@ type memoryHandler struct {
 	currentID int
 }
 
-// interface 구현
+// dbHandler interface 구현
 func (m *memoryHandler) addTodo(title string) *Todo {
 	todo := &Todo{}
 
