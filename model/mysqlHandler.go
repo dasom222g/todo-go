@@ -33,25 +33,28 @@ func (s *sqlHandler) close() {
 }
 
 func newMysqlHandler() dbHandler {
-	db, err := sql.Open("mysql", "root:asdfasdf1!@tcp(127.0.0.1:3306)/study")
+	db, err := sql.Open("mysql", "root:asdfasdf1!@tcp(127.0.0.1:3306)/dasom")
 	if err != nil {
 		log.Fatal("Unable to open!!!!!!!!!!!!!!!1")
 	}
-	results, err := db.Query("select * from category")
-	if nil != err {
-		log.Fatal("Error when fetching category table rows", err)
-	}
-	log.Print("results!!!!", results)
+	// results, err := db.Query("select * from category")
+	// if nil != err {
+	// 	log.Fatal("Error when fetching category table rows", err)
+	// }
+	// log.Print("results!!!!", results)
 	// for results.Next() {
 	// 쿼리해온 값의 next값이 없을 때 까지 실행
 
 	// }
-	// statement, _ := db.Prepare(`CREATE TABLE IF NOT EXISTS todos(
-	// 	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	// 	title TEXT,
-	// 	isComplete BOOLEAN,
-	// 	createdAt DATETIME
-	// )`)
-	// statement.Exec()
+	// create table
+	query := `CREATE TABLE IF NOT EXISTS todos (
+		id BIGINT PRIMARY KEY AUTO_INCREMENT,
+		title VARCHAR(255),
+		is_complete BOOLEAN,
+		created_at DATETIME
+	)`
+	if _, err := db.Exec(query); err != nil {
+		panic(err)
+	}
 	return &sqlHandler{db: db}
 }

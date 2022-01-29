@@ -27,7 +27,8 @@ var handler dbHandler
 
 func init() { // 패키지 실행 변수 초기화 이후로 실행됨
 	// 같은 패키지에 있으므로 따로 import하지 않아도 인식됨
-	handler = newMysqlHandler()
+	handler = newMemoryHandler()
+	// handler = newMysqlHandler()
 }
 
 func AddTodo(title string) *Todo {
