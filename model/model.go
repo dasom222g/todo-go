@@ -21,6 +21,7 @@ type dbHandler interface {
 	getTodos() []*Todo
 	removeTodo(id int) bool
 	completeTodo(id int, isComplete bool) bool
+	close()
 }
 
 var handler dbHandler

@@ -50,6 +50,8 @@ func (m *memoryHandler) completeTodo(id int, isComplete bool) bool {
 	return false
 }
 
+func (m *memoryHandler) close() {}
+
 // 생성 될때 초기화
 func newMemoryHandler() dbHandler {
 	m := &memoryHandler{}
