@@ -16,34 +16,34 @@ type Todo struct {
 
 // memoryHandler는 dbHandler 인터페이스를 구현함
 
-type dbHandler interface {
-	addTodo(title string) *Todo
-	getTodos() []*Todo
-	removeTodo(id int) bool
-	completeTodo(id int, isComplete bool) bool
-	close()
+type DBHandler interface {
+	AddTodo(title string) *Todo
+	GetTodos() []*Todo
+	RemoveTodo(id int) bool
+	CompleteTodo(id int, isComplete bool) bool
+	Close()
 }
 
-var handler dbHandler
+// var handler dbHandler
 
-func init() { // 패키지 실행 변수 초기화 이후로 실행됨
+func NewDBHandler(dbName string) DBHandler { // 패키지 실행 변수 초기화 이후로 실행됨
 	// 같은 패키지에 있으므로 따로 import하지 않아도 인식됨
-	handler = newMemoryHandler()
-	// handler = newMysqlHandler()
+	// handler := newMemoryHandler()
+	return newMysqlHandler(dbName)
 }
 
-func AddTodo(title string) *Todo {
-	return handler.addTodo(title)
-}
+// func AddTodo(title string) *Todo {
+// 	return handler.addTodo(title)
+// }
 
-func GetTodos() []*Todo {
-	return handler.getTodos()
-}
+// func GetTodos() []*Todo {
+// 	return handler.getTodos()
+// }
 
-func RemoveTodo(id int) bool {
-	return handler.removeTodo(id)
-}
+// func RemoveTodo(id int) bool {
+// 	return handler.removeTodo(id)
+// }
 
-func CompleteTodo(id int, isComplete bool) bool {
-	return handler.completeTodo(id, isComplete)
-}
+// func CompleteTodo(id int, isComplete bool) bool {
+// 	return handler.completeTodo(id, isComplete)
+// }

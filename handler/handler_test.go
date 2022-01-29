@@ -14,6 +14,7 @@ import (
 )
 
 var contentType string = "application/json"
+var dbName string = "dasom"
 
 func addTodo(url, title string, assert *assert.Assertions) *model.Todo {
 	s := fmt.Sprintf(`{"title": "%s!!", "is_complete": false}`, title)
@@ -29,7 +30,9 @@ func addTodo(url, title string, assert *assert.Assertions) *model.Todo {
 
 func TestHandleAddTodo(t *testing.T) {
 	assert := assert.New(t)
-	ts := httptest.NewServer(NewHttpHandler())
+	h := NewHttpHandler(dbName)
+	defer h.Close()
+	ts := httptest.NewServer(h)
 	defer ts.Close()
 
 	newTodo1 := addTodo(ts.URL+"/todos", "Buy some milk", assert)
@@ -57,7 +60,9 @@ func TestHandleAddTodo(t *testing.T) {
 
 func TestHandleCompleteTodo(t *testing.T) {
 	assert := assert.New(t)
-	ts := httptest.NewServer(NewHttpHandler())
+	h := NewHttpHandler(dbName)
+	defer h.Close()
+	ts := httptest.NewServer(h)
 	defer ts.Close()
 
 	newTodo3 := addTodo(ts.URL+"/todos", "Buy some milk tt", assert)
@@ -89,7 +94,9 @@ func TestHandleCompleteTodo(t *testing.T) {
 
 func TestHandleRemoveTodo(t *testing.T) {
 	assert := assert.New(t)
-	ts := httptest.NewServer(NewHttpHandler())
+	h := NewHttpHandler(dbName)
+	defer h.Close()
+	ts := httptest.NewServer(h)
 	defer ts.Close()
 	newTodo5 := addTodo(ts.URL+"/todos", "Buy some milk454", assert)
 	newTodo6 := addTodo(ts.URL+"/todos", "Go to sleep", assert)

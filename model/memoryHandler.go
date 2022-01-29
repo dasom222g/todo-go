@@ -8,7 +8,7 @@ type memoryHandler struct {
 }
 
 // dbHandler interface 구현
-func (m *memoryHandler) addTodo(title string) *Todo {
+func (m *memoryHandler) AddTodo(title string) *Todo {
 	todo := &Todo{}
 
 	m.currentID++
@@ -23,7 +23,7 @@ func (m *memoryHandler) addTodo(title string) *Todo {
 	return todo
 }
 
-func (m *memoryHandler) getTodos() []*Todo {
+func (m *memoryHandler) GetTodos() []*Todo {
 	todos := []*Todo{}
 	if len(m.todoMap) == 0 {
 		return todos
@@ -34,7 +34,7 @@ func (m *memoryHandler) getTodos() []*Todo {
 	return todos
 }
 
-func (m *memoryHandler) removeTodo(id int) bool {
+func (m *memoryHandler) RemoveTodo(id int) bool {
 	if _, exists := m.todoMap[id]; exists {
 		delete(m.todoMap, id)
 		return true
@@ -42,7 +42,7 @@ func (m *memoryHandler) removeTodo(id int) bool {
 	return false
 }
 
-func (m *memoryHandler) completeTodo(id int, isComplete bool) bool {
+func (m *memoryHandler) CompleteTodo(id int, isComplete bool) bool {
 	if todo, exists := m.todoMap[id]; exists {
 		todo.IsComplete = isComplete
 		return true
@@ -50,10 +50,10 @@ func (m *memoryHandler) completeTodo(id int, isComplete bool) bool {
 	return false
 }
 
-func (m *memoryHandler) close() {}
+func (m *memoryHandler) Close() {}
 
 // 생성 될때 초기화
-func newMemoryHandler() dbHandler {
+func newMemoryHandler() DBHandler {
 	m := &memoryHandler{}
 	m.currentID = 0
 	m.todoMap = make(map[int]*Todo)

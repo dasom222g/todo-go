@@ -7,10 +7,15 @@ import (
 	"github.com/urfave/negroni"
 )
 
+var dbName string = "dasom"
+
 func main() {
-	mux := handler.NewHttpHandler()
+	// 처음 sqlHandler를 생성해준 main에서 close해줌
+	m := handler.NewHttpHandler(dbName)
+	defer m.Close()
+
 	n := negroni.Classic()
-	n.UseHandler(mux)
+	n.UseHandler(m)
 
 	err := http.ListenAndServe(":3000", n)
 	if err != nil {

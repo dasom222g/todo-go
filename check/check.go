@@ -13,3 +13,9 @@ func IsError(err error, rd *render.Render, w http.ResponseWriter, code int) bool
 	}
 	return false
 }
+
+func CheckError(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
