@@ -38,8 +38,8 @@ func (s *sqlHandler) GetTodos() []*Todo {
 		var todo Todo
 		// 각 row의 데이터들을 todo에 넣어줌
 		err := rows.Scan(&todo.ID, &todo.Title, &todo.IsComplete, &todo.CreatedAt, &todo.UpdatedAt)
-		todos = append(todos, &todo)
 		check.CheckError(err)
+		todos = append(todos, &todo)
 	}
 	return todos
 }
@@ -70,15 +70,6 @@ func (s *sqlHandler) Close() {
 func newMysqlHandler(dbName string) DBHandler {
 	db, err := sql.Open("mysql", fmt.Sprintf("root:asdfasdf1!@tcp(127.0.0.1:3306)/%s?parseTime=true", dbName))
 	check.CheckError(err)
-	// results, err := db.Query("select * from category")
-	// if nil != err {
-	// 	log.Fatal("Error when fetching category table rows", err)
-	// }
-	// log.Print("results!!!!", results)
-	// for results.Next() {
-	// 쿼리해온 값의 next값이 없을 때 까지 실행
-
-	// }
 	// create table
 	query := `CREATE TABLE IF NOT EXISTS todos (
 		id BIGINT PRIMARY KEY AUTO_INCREMENT,
