@@ -28,22 +28,5 @@ type DBHandler interface {
 
 func NewDBHandler(dbName string) DBHandler { // 패키지 실행 변수 초기화 이후로 실행됨
 	// 같은 패키지에 있으므로 따로 import하지 않아도 인식됨
-	// handler := newMemoryHandler()
 	return newMysqlHandler(dbName)
 }
-
-// func AddTodo(title string) *Todo {
-// 	return handler.addTodo(title)
-// }
-
-// func GetTodos() []*Todo {
-// 	return handler.getTodos()
-// }
-
-// func RemoveTodo(id int) bool {
-// 	return handler.removeTodo(id)
-// }
-
-// func CompleteTodo(id int, isComplete bool) bool {
-// 	return handler.completeTodo(id, isComplete)
-// }

@@ -19,17 +19,6 @@ type Handler struct {
 	DB           model.DBHandler
 }
 
-// var todoMap map[int]*Todo
-// var currentID int
-
-// type Todo struct {
-// 	ID         int       `json:"id"`
-// 	Title      string    `json:"title"`
-// 	IsComplete bool      `json:"is_complete"`
-// 	CreatedAt  time.Time `json:"created_at"`
-// 	UpdatedAt  time.Time `json:"updated_at"`
-// }
-
 type Success struct {
 	Success bool `json:"success"`
 }
