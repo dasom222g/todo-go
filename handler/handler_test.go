@@ -17,6 +17,9 @@ var contentType string = "application/json"
 var dbName string = "dasom"
 
 func addTodo(url, title string, assert *assert.Assertions) *model.Todo {
+	getSessionId = func(r *http.Request) string {
+		return "test_session_id"
+	}
 	s := fmt.Sprintf(`{"title": "%s!!", "is_complete": false}`, title)
 	res, err := http.Post(url, contentType, strings.NewReader(s))
 	assert.NoError(err)

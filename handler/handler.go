@@ -70,7 +70,7 @@ func (h *Handler) Close() {
 	h.DB.Close()
 }
 
-func getSessionId(r *http.Request) string {
+var getSessionId = func(r *http.Request) string {
 	session, err := store.Get(r, "session")
 	if err != nil {
 		return ""
