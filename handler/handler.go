@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -12,6 +13,7 @@ import (
 	"github.com/gorilla/pat"
 	"github.com/gorilla/sessions"
 	"github.com/unrolled/render"
+	"github.com/urfave/negroni"
 )
 
 var rd *render.Render = render.New()
@@ -80,11 +82,32 @@ func getSessionId(r *http.Request) string {
 	return val.(string)
 }
 
+func CheckId(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	if strings.Contains(r.URL.Path, "/login") || strings.Contains(r.URL.Path, "/auth") {
+		// 로그인 페이지일 경우
+		next(w, r)
+		return
+	}
+	id := getSessionId(r)
+	if id != "" {
+		// 로그인 되어 있는 경우
+		log.Println("로그인 되었습니다.")
+		next(w, r)
+		return
+	}
+	// 로그인 안된 경우
+	log.Println("로그인 안됨!!")
+	http.Redirect(w, r, "/login.html", http.StatusTemporaryRedirect)
+}
+
 func NewHttpHandler(dbName string) *Handler {
 	mux := pat.New()
+	n := negroni.New(negroni.NewRecovery(), negroni.NewLogger(), negroni.HandlerFunc(CheckId), negroni.NewStatic(http.Dir("public")))
+
+	n.UseHandler(mux)
 	// 초기화
 	h := &Handler{
-		Handler: mux,
+		Handler: n,
 		DB:      model.NewDBHandler(dbName),
 	}
 	mux.Get("/todos/{id:[0-9]+}", h.handleCompleteTodo)

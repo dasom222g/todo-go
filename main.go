@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/dasom222g/todo-go/handler"
-	"github.com/urfave/negroni"
 )
 
 var dbName string = "dasom"
@@ -14,10 +13,10 @@ func main() {
 	m := handler.NewHttpHandler(dbName)
 	defer m.Close()
 
-	n := negroni.Classic()
-	n.UseHandler(m)
+	// n := negroni.Classic()
+	// n.UseHandler(m)
 
-	err := http.ListenAndServe(":3000", n)
+	err := http.ListenAndServe(":3000", m)
 	if err != nil {
 		panic(err)
 	}

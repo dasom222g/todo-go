@@ -76,15 +76,14 @@ func handleGoogleLoginCallback(w http.ResponseWriter, r *http.Request) {
 	}
 	// set session value
 	session.Values["id"] = info.ID
-	session.Values["email"] = info.Email
-	session.Values["picture"] = info.Picture
 	// save session
 	err = session.Save(r, w)
 	if err != nil {
-		log.Println(err.Error())
+		log.Println("error!!", err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	log.Println("에러22")
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
 
