@@ -3,16 +3,19 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
 	"github.com/dasom222g/todo-go/check"
 	"github.com/dasom222g/todo-go/model"
 	"github.com/gorilla/pat"
+	"github.com/gorilla/sessions"
 	"github.com/unrolled/render"
 )
 
 var rd *render.Render = render.New()
+var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 
 type Handler struct {
 	http.Handler // 임베디드 형태
@@ -64,6 +67,19 @@ func (h *Handler) Close() {
 	h.DB.Close()
 }
 
+func getSessionId(r *http.Request) string {
+	session, err := store.Get(r, "session")
+	if err != nil {
+		return ""
+	}
+	val := session.Values["id"]
+	if val == nil {
+		return ""
+	}
+	// 데이터형식 모를경우 .(string) 으로 명시
+	return val.(string)
+}
+
 func NewHttpHandler(dbName string) *Handler {
 	mux := pat.New()
 	// 초기화
@@ -75,6 +91,8 @@ func NewHttpHandler(dbName string) *Handler {
 	mux.Get("/todos", h.handleGetTodos)
 	mux.Post("/todos", h.handleAddTodo)
 	mux.Delete("/todos/{id:[0-9]+}", h.handleRemoveTodo)
+	mux.HandleFunc("/auth/google/login", handleGoogleLogin)
+	mux.HandleFunc("/auth/google/callback", handleGoogleLoginCallback)
 	mux.Get("/", h.indexHandler)
 	return h
 }
