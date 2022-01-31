@@ -8,7 +8,7 @@ type memoryHandler struct {
 }
 
 // dbHandler interface 구현
-func (m *memoryHandler) AddTodo(title string) *Todo {
+func (m *memoryHandler) AddTodo(title, sessionId string) *Todo {
 	todo := &Todo{}
 
 	m.currentID++
@@ -23,7 +23,7 @@ func (m *memoryHandler) AddTodo(title string) *Todo {
 	return todo
 }
 
-func (m *memoryHandler) GetTodos() []*Todo {
+func (m *memoryHandler) GetTodos(sessionId string) []*Todo {
 	todos := []*Todo{}
 	if len(m.todoMap) == 0 {
 		return todos

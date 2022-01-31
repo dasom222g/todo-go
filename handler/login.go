@@ -39,7 +39,6 @@ func handleGoogleLogin(w http.ResponseWriter, r *http.Request) {
 	// 구글로그인 사이트로 리다이렉트
 	state := generateStateOauthCookie(w)
 	url := googleOauthConfig.AuthCodeURL(state) // CSRF공격을 막기위한 인자
-	log.Println("로그인 요청 request url", url)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 

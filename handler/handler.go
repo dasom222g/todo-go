@@ -32,17 +32,19 @@ func (h *Handler) indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) handleGetTodos(w http.ResponseWriter, r *http.Request) {
-	todos := h.DB.GetTodos()
+	sessionId := getSessionId(r)
+	todos := h.DB.GetTodos(sessionId)
 	rd.JSON(w, http.StatusOK, todos)
 }
 
 func (h *Handler) handleAddTodo(w http.ResponseWriter, r *http.Request) {
+	sessionId := getSessionId(r)
 	todo := new(model.Todo)
 	err := json.NewDecoder(r.Body).Decode(todo)
 	if check.IsError(err, rd, w, http.StatusBadRequest) {
 		return
 	}
-	newTodo := h.DB.AddTodo(todo.Title)
+	newTodo := h.DB.AddTodo(todo.Title, sessionId)
 	rd.JSON(w, http.StatusCreated, newTodo)
 }
 
@@ -81,7 +83,7 @@ func getSessionId(r *http.Request) string {
 	return val.(string)
 }
 
-func CheckId(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+func CheckSessionId(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	if strings.Contains(r.URL.Path, "/login") || strings.Contains(r.URL.Path, "/auth") {
 		// 로그인 페이지일 경우
 		next(w, r)
@@ -99,7 +101,7 @@ func CheckId(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 
 func NewHttpHandler(dbName string) *Handler {
 	mux := pat.New()
-	n := negroni.New(negroni.NewRecovery(), negroni.NewLogger(), negroni.HandlerFunc(CheckId), negroni.NewStatic(http.Dir("public")))
+	n := negroni.New(negroni.NewRecovery(), negroni.NewLogger(), negroni.HandlerFunc(CheckSessionId), negroni.NewStatic(http.Dir("public")))
 
 	n.UseHandler(mux)
 	// 초기화

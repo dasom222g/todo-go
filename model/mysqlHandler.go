@@ -14,8 +14,8 @@ type sqlHandler struct {
 }
 
 // dbHandler interface 구현
-func (s *sqlHandler) AddTodo(title string) *Todo {
-	results, err := s.db.Exec("INSERT INTO todos (title, is_complete) VALUES (?, ?)", title, false)
+func (s *sqlHandler) AddTodo(title, sessionId string) *Todo {
+	results, err := s.db.Exec("INSERT INTO todos (session_id, title, is_complete) VALUES (?, ?, ?)", sessionId, title, false)
 	check.CheckError(err)
 	id, err := results.LastInsertId()
 	check.CheckError(err)
@@ -28,8 +28,8 @@ func (s *sqlHandler) AddTodo(title string) *Todo {
 	return todo
 }
 
-func (s *sqlHandler) GetTodos() []*Todo {
-	rows, err := s.db.Query("SELECT id, title, is_complete, created_at, updated_at FROM todos")
+func (s *sqlHandler) GetTodos(sessionId string) []*Todo {
+	rows, err := s.db.Query("SELECT id, title, is_complete, created_at, updated_at FROM todos w WHERE session_id=?", sessionId)
 	check.CheckError(err)
 
 	todos := []*Todo{}
@@ -73,13 +73,14 @@ func newMysqlHandler(dbName string) DBHandler {
 	// create table
 	query := `CREATE TABLE IF NOT EXISTS todos (
 		id BIGINT PRIMARY KEY AUTO_INCREMENT,
+		session_id VARCHAR(255),
 		title VARCHAR(255),
 		is_complete BOOLEAN,
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-	)`
+	);`
 	if _, err := db.Exec(query); err != nil {
 		panic(err)
 	}
-	return &sqlHandler{db: db}
+	return &sqlHandler{db}
 }

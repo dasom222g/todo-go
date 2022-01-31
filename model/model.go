@@ -17,8 +17,8 @@ type Todo struct {
 // memoryHandler는 dbHandler 인터페이스를 구현함
 
 type DBHandler interface {
-	AddTodo(title string) *Todo
-	GetTodos() []*Todo
+	AddTodo(title, sessionId string) *Todo
+	GetTodos(sessionId string) []*Todo
 	RemoveTodo(id int) bool
 	CompleteTodo(id int, isComplete bool) bool
 	Close()
