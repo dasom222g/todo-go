@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -91,12 +90,10 @@ func CheckId(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	id := getSessionId(r)
 	if id != "" {
 		// 로그인 되어 있는 경우
-		log.Println("로그인 되었습니다.")
 		next(w, r)
 		return
 	}
 	// 로그인 안된 경우
-	log.Println("로그인 안됨!!")
 	http.Redirect(w, r, "/login.html", http.StatusTemporaryRedirect)
 }
 

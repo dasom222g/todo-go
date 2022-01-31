@@ -6,6 +6,7 @@ body {
   text-rendering: optimizeLegibility;
   font-family: "Noto Sans KR", sans-serif;
   font-weight: 400;
+  margin: 0;
 }
 
 button, input, textarea {
