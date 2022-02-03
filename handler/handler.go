@@ -28,7 +28,7 @@ type Success struct {
 }
 
 func (h *Handler) indexHandler(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/todo.html", http.StatusTemporaryRedirect)
+	http.Redirect(w, r, "/login.html", http.StatusTemporaryRedirect)
 }
 
 func (h *Handler) handleGetTodos(w http.ResponseWriter, r *http.Request) {
