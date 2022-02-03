@@ -71,7 +71,7 @@ func newMysqlHandler(dbName string) DBHandler {
 	db, err := sql.Open("mysql", fmt.Sprintf("root:asdfasdf1!@tcp(127.0.0.1:3306)/%s?parseTime=true", dbName))
 	check.CheckError(err)
 	// create table
-	query := `CREATE TABLE IF NOT EXISTS todos (
+	createTableQuery := `CREATE TABLE IF NOT EXISTS todos (
 		id BIGINT PRIMARY KEY AUTO_INCREMENT,
 		session_id VARCHAR(255),
 		title VARCHAR(255),
@@ -79,7 +79,13 @@ func newMysqlHandler(dbName string) DBHandler {
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 	);`
-	if _, err := db.Exec(query); err != nil {
+	createIndexQuery := `CREATE INDEX IF NOT EXISTS SessionIdIndex on todos (
+		session_id ASC
+	);`
+	if _, err := db.Exec(createTableQuery); err != nil {
+		panic(err)
+	}
+	if _, err := db.Exec(createIndexQuery); err != nil {
 		panic(err)
 	}
 	return &sqlHandler{db}

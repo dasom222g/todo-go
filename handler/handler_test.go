@@ -129,5 +129,4 @@ func TestHandleRemoveTodo(t *testing.T) {
 			assert.Error(fmt.Errorf("Not exists ID"))
 		}
 	}
-
 }
